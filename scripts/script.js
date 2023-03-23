@@ -3,8 +3,11 @@ const textarea = document.querySelector("#canva")
 function preview_image(event) {
     var reader = new FileReader();
     reader.onload = function(){
-        console.log(reader.result)
-        textarea.attributes["data-image-url"] = reader.result;
+        (function(jQuery){
+            $("#uploader").canvasAreaDraw({
+                imageUrl: reader.result
+            })
+        })(jQuery)
     }
     reader.readAsDataURL(event.target.files[0]);
 }
