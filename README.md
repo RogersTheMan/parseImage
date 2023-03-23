@@ -1,0 +1,3 @@
+# parseImage
+
+Vetorizador de imagens!
