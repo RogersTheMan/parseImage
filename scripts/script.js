@@ -11,6 +11,7 @@ function preview_image(event) {
         zoomInCanvas(reader.result)
     }
     reader.readAsDataURL(event.target.files[0]);
+    $("#uploader").addClass("d-none")
 }
 
 
