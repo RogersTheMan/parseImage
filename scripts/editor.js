@@ -403,14 +403,8 @@
 			$(publishDialog).jqm();
 
 			$('#export').on('click', function(e){
-				e.preventDefault();
 				if (!$(this).hasClass('disabled')) {
-					
-					$this.trigger('canvasAreaDraw.telemetry', {
-						action: 'export', 
-						isSVG: isSVG, 
-						shapes: shapes.length
-					});
+				
 					
 
 					var is_iedge = (/MSIE/i.test(navigator.userAgent) || 
@@ -418,11 +412,15 @@
 									/Edge\/\d./i.test(navigator.userAgent));
 
 					if (is_iedge) {
-						$(exportDialog + ' .image_container').html(getMap(false, false));
+						//$(exportDialog + ' .image_container').html(getMap(false, false));
+
 						
 					} else {
 						var dataURL = getMap(false, true);
-						$(exportDialog + ' .image_container').html('<a href="' + dataURL + '" target="_blank"><img src="' + dataURL + '"></a>'); 
+						console.log(dataURL)
+						$(this)[0].href = dataURL
+
+						//$(exportDialog + ' .image_container').html('<a href="' + dataURL + '" target="_blank"><img src="' + dataURL + '"></a>'); 
 					}
 					
 

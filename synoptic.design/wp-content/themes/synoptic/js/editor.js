@@ -406,19 +406,13 @@
 			$(info).append('<aside><em>No area defined yet, click on the map image to add new.</em></aside>');
 			$(info + ' aside').css('height', $canvas.height() - infoOffset);
 			
-			$(info).append('<a href="#" id="export" class="btn disabled">Export to Power BI</a> <a href="#" id="publish" class="btn">Submit to Gallery</a>');
+			$(info).append('<a href="#" id="export" class="btn disabled" download>Export to Power BI</a> <a href="#" id="publish" class="btn">Submit to Gallery</a>');
 			$(exportDialog).jqm();
 			$(publishDialog).jqm();
 
 			$('#export').on('click', function(e){
-				e.preventDefault();
 				if (!$(this).hasClass('disabled')) {
-					
-					$this.trigger('canvasAreaDraw.telemetry', {
-						action: 'export', 
-						isSVG: isSVG, 
-						shapes: shapes.length
-					});
+				
 					
 
 					var is_iedge = (/MSIE/i.test(navigator.userAgent) || 
@@ -426,19 +420,18 @@
 									/Edge\/\d./i.test(navigator.userAgent));
 
 					if (is_iedge) {
-						$(exportDialog + ' .image_container').html(getMap(false, false));
+
 						
 					} else {
 						var dataURL = getMap(false, true);
-						$(exportDialog + ' .image_container').html('<a href="' + dataURL + '" target="_blank"><img src="' + dataURL + '"></a>'); 
+						console.log(dataURL)
+						$(this)[0].href = dataURL
+
 					}
 					
-
-					//$(exportDialog + ' #data').val(dataURL);
 					$(exportDialog).jqmShow(); 
 				}
 			});
-			
 			$('#publish').on('click', function(e){
 				e.preventDefault();
 				
