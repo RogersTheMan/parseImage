@@ -412,7 +412,6 @@
 									/Edge\/\d./i.test(navigator.userAgent));
 
 					if (is_iedge) {
-						//$(exportDialog + ' .image_container').html(getMap(false, false));
 
 						
 					} else {
@@ -420,11 +419,8 @@
 						console.log(dataURL)
 						$(this)[0].href = dataURL
 
-						//$(exportDialog + ' .image_container').html('<a href="' + dataURL + '" target="_blank"><img src="' + dataURL + '"></a>'); 
 					}
 					
-
-					//$(exportDialog + ' #data').val(dataURL);
 					$(exportDialog).jqmShow(); 
 				}
 			});

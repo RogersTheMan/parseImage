@@ -11,7 +11,7 @@
 	var $this, $canvas, $menu, ctx, info, mapImage, shapes, activeShape, activePoint, canvasPoint, shapePoints, createNewShape, autoCreateNewShape, anchorLastTime, imageColors, grabbingTimeout;
 	var isMarching = false;
 	var isSVG = false;
-	var tools = ['magicwand', 'crosshair', 'default', 'grab'];
+	var tools = ['crosshair', 'default', 'grab'];
 	var currentTool = tools[0];
 	var w, h, actualW, actualH;
 
@@ -406,7 +406,7 @@
 			$(info).append('<aside><em>No area defined yet, click on the map image to add new.</em></aside>');
 			$(info + ' aside').css('height', $canvas.height() - infoOffset);
 			
-			$(info).append('<a href="#" id="export" class="btn disabled" download>Export to Power BI</a> <a href="#" id="publish" class="btn">Submit to Gallery</a>');
+			$(info).append('<a href="#" id="export" class="btn disabled" download>Export to Power BI</a>');
 			$(exportDialog).jqm();
 			$(publishDialog).jqm();
 
@@ -594,7 +594,7 @@
 	};
 	
 	var setCursor = function(cursor) {
-		var classes = ['default', 'crosshair', 'magicwand', 'grab', 'grabbing'];
+		var classes = ['default', 'crosshair', 'grab', 'grabbing'];
 		if (typeof(cursor) === 'undefined' || !cursor) 
 			cursor = currentTool;
 
@@ -1437,82 +1437,6 @@
 	};
 	
 	//Copyright (c) 2015 - Daniele Perilli - daniele.perilli@gmail.com
-	//Find possible areas based on color proximity
-	var magicWand = function(x, y) {
-		var dbg = false; //Debug mode
-
-		var points = [];
-
-		var matchColor = function(px, py){
-			
-			var firstPixel = ((y * w) + x) * 4;
-			var pixel = ((py * w) + px) * 4;
-		
-			if (dbg) console.log('%c   ', 'background:rgba(' + imageColors.data[pixel] + ',' +  imageColors.data[pixel + 1] + ',' + imageColors.data[pixel + 2] + ',' + imageColors.data[pixel+3] + '); border:1px solid #ccc');
-			
-			return (firstPixel == pixel || (imageColors.data[pixel] == imageColors.data[firstPixel] && imageColors.data[pixel + 1] == imageColors.data[firstPixel + 1] && imageColors.data[pixel + 2] == imageColors.data[firstPixel + 2] && imageColors.data[pixel + 3] == imageColors.data[firstPixel + 3]));
-		};
-
-		//			Top,     Right,  Bottom, Left
-		var dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]], dbgDirs = ['^', '>', 'v','<'];
-	
-		var d = 0; //Direction
-		var xx = x, yy = y;
-		var vx = NaN, vy = NaN; //First valid point xy
-		
-		var elapsed = 0, timeAtStart = (new Date()).getTime();
-
-		do {
-			
-			var nd = d - 1;
-			if (nd < 0) nd = (isNaN(vx) ? 0 : dirs.length - 1);
-
-			for (var c = 0; c < dirs.length; c++) {
-		
-				var dxx = xx + dirs[nd][0];
-				var dyy = yy + dirs[nd][1];
-				var canvasEdgeReached = (dxx <= 0 || dxx >= w || dyy <= 0 || dyy >= h);
-
-				if (matchColor(dxx, dyy) && !canvasEdgeReached) {
-					if (dbg) console.log('= Same color at ' + dxx + ',' + dyy + ' (' + dbgDirs[nd] + ')');
-					
-					break;
-					
-				} else {
-					if (dbg) console.log('~ Diff color at ' + dxx + ',' + dyy + ' (' + dbgDirs[nd] + ')');
-				}
-				
-				nd++;
-				if (nd >= dirs.length) nd = 0;
-			}
-			
-			if (nd != d) {
-				//Direction changed
-				if (isNaN(vx)) {
-					//Don't add the first point you found
-					vx = xx;
-					vy = yy;
-				} else {
-					if (dbg) console.log('+ Point at ' + xx + ',' + yy);
-
-					points.push(xx);
-					points.push(yy);
-				}
-				d = nd;
-				
-			} 
-			
-			xx += dirs[d][0];
-			yy += dirs[d][1];
-			if (dbg) console.log(dbgDirs[d] + ' Move to ' + xx + ',' + yy);
-			
-			elapsed = ((new Date()).getTime() - timeAtStart) / 1000; //Security check
-			
-		} while ((xx != vx || yy != vy) && (elapsed < 10));
-
-		return points;
-
-	};	
 	
 	//Gridline
 	var gridline = function(){
