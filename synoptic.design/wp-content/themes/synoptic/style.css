@@ -35,7 +35,6 @@ input:focus, select:focus, textarea:focus, button:focus, a:focus { outline: none
 input::-moz-focus-inner {  border: 0; }
 hr { display: block; clear:both;  height: 1px; border: 0; border-top: 1px solid #e6e6e6; padding:0 0 40px 0; margin: 40px 0 0 0;  }
 code {font-family:'Consolas', monospace; display:block; padding:20px; background:#fff;  }
-::-moz-selection { background: #f1c732; color: #000;  text-shadow: none; }
 ::selection { background: #f1c732; color: #000; text-shadow: none; }
 address {font-style:normal}
 .prn {display:none !important} 
@@ -56,13 +55,13 @@ address {font-style:normal}
 .error::-moz-placeholder { color:#ec5d5d !important }
 
 label {cursor:pointer}
-a, a:hover, a:active, a:visited, a:focus {color:#f1c732; text-decoration:none; outline:none; font-weight:600}
+a, a:hover, a:active, a:visited, a:focus {color:#005fe8; text-decoration:none; outline:none; font-weight:600}
 
-.btn  {display:inline-block; padding:10px 18px; background:#f1c732; font-family:'Open Sans'; font-weight:600; color:#000; border:0; text-transform:uppercase}
-	a.btn, a.btn:active, a.btn:visited {color:#000;}
-	.btn:hover, a.btn:hover {color:#000; background:#ffd335}
+.btn  {display:inline-block; padding:10px 18px; background:#005fe8; font-family:'Open Sans'; font-weight:600; color:#fff; border:0; text-transform:uppercase}
+	a.btn, a.btn:active, a.btn:visited {color:#fff;}
+	.btn:hover, a.btn:hover {color:#fff; background:#005fe8}
 	
-	.btn.disabled, a.btn.disabled, a.btn.disabled:hover {background:#f1e5bc; color:#bbb; cursor:default}
+	.btn.disabled, a.btn.disabled, a.btn.disabled:hover {background:#0166f3e1; color:#fff; cursor:default; opacity: 0.3;}
 
 .action-btn {background:none; border:2px solid #000; font-size:12px;line-height:18px;  padding:6px 10px; margin:0; color:#000}
 	.action-btn:hover {background:#e0e0e0}
@@ -81,7 +80,7 @@ a, a:hover, a:active, a:visited, a:focus {color:#f1c732; text-decoration:none; o
 
 .txtbox {margin:15px 0; width:500px; padding:5px 8px; font-size:16px; font-family:'Open Sans'; line-height:24px;  color:#000;  border-radius:2px; border:0 }
 
-select { margin:10px 0; padding:5px 8px; height:34px; width:218px; font-size:16px; font-family:'Open Sans'; line-height:24px;  color:#000;  border-radius:0px; -webkit-appearance: none; -moz-appearance: none;
+select { margin:10px 0; padding:5px 8px; height:34px; width:218px; font-size:16px; font-family:'Open Sans'; line-height:24px;  color:#000;  border-radius:0px; 
     text-indent: 0.01px; text-overflow: ''; border:2px solid #000; background:#fff  url(images/arrow.png) no-repeat 97% center;}
 
 .segmented { display:inline-block; overflow:hidden; margin:10px auto; padding:0}
@@ -127,7 +126,7 @@ line-height: 20px; /*top: expression( ( ( ignoreMe = document.documentElement.sc
 
 /* Cookie bar */
 #cookie-bar .button {
-		padding:10px 18px; background:#f1c732; font-family:'Open Sans'; font-weight:600; color:#000; border:0; text-transform:uppercase; margin:15px 0 0 0; display: block; text-align: center;
+		padding:10px 18px; background:#005fe8; font-family:'Open Sans'; font-weight:600; color:#000; border:0; text-transform:uppercase; margin:15px 0 0 0; display: block; text-align: center;
 }
 
 /* jqModal */
@@ -176,7 +175,7 @@ h2 {margin:0 0 10px 0; text-transform:uppercase; font-size:24px}
 	#polygon {border:2px solid #eee; background:#eee; padding:0; overflow:hidden;   }
 		#polygon.loaded {margin-right:290px}
 		#polygon.loading {background:#eee url(images/loader.gif) no-repeat center}
-		#polygon.active {border-color:#f1c732 }
+		#polygon.active {border-color:#005fe8 }
 		
 		#canvas {cursor:default; user-select: none;-webkit-user-select: none; -moz-user-select: none;}
 			div#canvas {overflow:hidden; padding-bottom: 8px}
@@ -198,11 +197,11 @@ h2 {margin:0 0 10px 0; text-transform:uppercase; font-size:24px}
 		#polygon #tools {display:none; overflow:hidden; }
 		
 			#polygon #tools .filegroup {float:left; margin:10px;}
-				#polygon #tools .filegroup button {-webkit-appearance: none; background:none; border:2px solid #000; font-size:12px;line-height:18px;  padding:6px 12px; margin:0}
+				#polygon #tools .filegroup button { background:none; border:2px solid #000; font-size:12px;line-height:18px;  padding:6px 12px; margin:0}
 					#polygon #tools .filegroup button:hover  {background:#aaa; } 
 				
 			#polygon #tools .actiongroup {float:left; margin:10px 12px;}
-				#polygon #tools .actiongroup button {-webkit-appearance: none; background:none; border:2px solid #000; line-height:0; padding:7px 12px; margin:0 0 0 -2px}
+				#polygon #tools .actiongroup button { background:none; border:2px solid #000; line-height:0; padding:7px 12px; margin:0 0 0 -2px}
 					#polygon #tools .actiongroup button.autoselected {background:#ccc}
 					#polygon #tools .actiongroup button.selected, #polygon #tools .actiongroup button:hover  {background:#aaa; } 
 					
@@ -214,7 +213,7 @@ h2 {margin:0 0 10px 0; text-transform:uppercase; font-size:24px}
 					
 			#polygon #tools .zoomgroup {float:right; margin:10px}
 				#polygon #tools #zoomvalue {width:55px; display:inline-block; font-size:16px; color: #333; text-align: center}
-				#polygon #tools .zoomgroup button {-webkit-appearance: none; background:none; border:2px solid #000; line-height:1px; padding:8px  }
+				#polygon #tools .zoomgroup button { background:none; border:2px solid #000; line-height:1px; padding:8px  }
 					#polygon #tools .zoomgroup button.active, #polygon #tools .zoomgroup button:hover {background:#aaa}
 				#polygon #tools .zoomgroup img {vertical-align:middle}
 			
@@ -228,7 +227,7 @@ h2 {margin:0 0 10px 0; text-transform:uppercase; font-size:24px}
 				#polygon #uploader #remote #polygonURL {width:50%; max-width:400px  }
 					#polygon #uploader #remote #polygonURL.error {border-color:#ec5d5d; color:#ec5d5d }
 				#polygon #uploader #remote .btn {font-size:16px !important}
-				#polygon #browseImage {background: none; color: #000 !important; border:2px solid #000;border-right: 0;padding:8px 18px}
+				#polygon #browseImage {background: none; color: #000 !important; border:2px solid #000;padding:8px 18px}
 					#polygon #browseImage:hover {background:#aaa}
 				#polygon #file { visibility:hidden; height:0; width:0}
 	
@@ -243,7 +242,6 @@ h2 {margin:0 0 10px 0; text-transform:uppercase; font-size:24px}
 		#shapeList em {color:#999}
 		#shapeList .btn { margin:5px 0 0 0; display:block; text-align:center}
 	
-		#shapes {}
 			#shapes .filter {position:absolute; margin-top: -40px !important;
 margin-left: 130px !important; font-size:12px}
 			
@@ -265,105 +263,17 @@ margin-left: 130px !important; font-size:12px}
 					#shapes .excluded :-moz-placeholder { color: #ddd !important }
 					#shapes .excluded ::-moz-placeholder { color: #ddd !important }
 
-				#shapes .active {color:#f1c732 }
-					#shapes .active .txt, #shapes .active textarea {border-color:#f1c732 !important; color:#000}
+				#shapes .active {color:#005fe8 }
+					#shapes .active .txt, #shapes .active textarea {border-color:#005fe8 !important; color:#000}
 
 			#shapes .indented {padding-left:20px; }
 			#shapes .crumb {float:left; width:10px; height: 27px; margin-left: -18px !important; border: 2px dotted #000; border-top:0; border-right:0}
-				#shapes .active .crumb {border-color:#f1c732 !important;}
+				#shapes .active .crumb {border-color:#005fe8 !important;}
 				#shapes .excluded .crumb {border-color:#ddd !important;}
 			
 		#shapes.svg {font-size:14px}
 			#shapes.svg div {margin:3px 5px 8px 0}
 			#shapes.svg .txt {font-size:12px; padding:2px 5px}
-
-			
-		#exportdiag h3 {margin:0 0 10px 0; text-transform:uppercase; font-size:20px}
-		#exportmap {display:block; font-size:13px; margin:10px 0 0 0; /*overflow: hidden; text-overflow: ellipsis; white-space: nowrap;*/ word-wrap: break-word}
-		#exportdiag .screenshot {display:block; margin:40px auto}
-		#exportdiag .image {text-align:center}
-		
-			#exportdiag .image .image_container {height:156px;}
-			#exportdiag .image_container img, #exportdiag .image_container svg {width: auto; max-width:100%; height: 140px; }
-			
-			#exportdiag .note {color:#999; margin:10px; font-size:13px;}
-		#exportdiag .areas {float:right; width:45%; }
-			#exportdiag .areas textarea {height:140px; width:90%;font-size:13px; line-height:17px }
-			#exportdiag .areas button {-webkit-appearance: none; margin: 5px 0}
-		#publishdiag {}
-			#publishdiag.loading {background:#eee url(images/loader.gif) no-repeat center; min-height:170px}
-			#publishdiag .terms {font-size:12px; height:394px; overflow-y: scroll }	
-			#publishdiag .step { }
-			#publishdiag .txt {margin:-1px 0; width: 400px}
-			#publishdiag select {margin:-1px 0; width: 420px}
-			#publishdiag textarea {height:150px; margin:-1px 0; width:400px}
-			#publishdiag .thumbnail {width:150px; float:right; font-size:13px;}
-				#publishdiag .thumbnail ul {padding:0 0 20px 20px}
-				#publishdiag .thumbnail img {width:100%; height:auto}
-			#publishdiag #exclude_area_names {margin:10px 0 0 0}
-			#publishdiag #publishform {margin-right:180px}
-            #publishfeedback {font-size:18px; font-weight:bold; margin:20px 0 0 0}
-		
-	#bugdiag {}
-		#bugdiag.loading {background:#eee url(images/loader.gif) no-repeat center; height:250px}
-		#bugdiag .txt {margin:-1px 0; width: 580px}
-		#bugdiag textarea {height:150px; margin:-1px 0; width:580px}		
-		#bugsend {float:right; margin-top:40px} 
-		#bugfeedback {font-size:18px; font-weight:bold; margin:20px 0 0 0}
-		
-		#bugdiag .g-recaptcha {float:left; margin-top:10px}
-		
-
-/* Gallery */
-#gallery {display:none; background:#eee; padding:0; overflow: hidden;  }
-	#gallery ul {padding:0; margin:0;overflow-y:auto;}
-	
-	#gallery .folders {padding:20px 32px;}
-		#gallery .folders a {margin:0 0 0 -2px; display:inline-block; text-align:center; border:2px solid #000; font-size:12px;line-height:18px;  padding:6px 12px; color:#000; text-transform: uppercase;}
-			#gallery .folders a:hover {background:#ccc; color:#000}
-			#gallery .folders a.active {background:#aaa}
-				
-	#gallery .items {margin-top:-20px}
-		#gallery .items li {list-style:none; margin:30px 0 0 30px; padding:0; float:left;width:250px; height:160px; text-align:center;  }
-			#gallery .items li .thumbnail_container {background:#fff; border:3px solid #eee; padding:5px;}
-			#gallery .items li .thumbnail { height:100px; background-position: center; background-repeat:no-repeat; background-size: contain; }
-				
-         	#gallery .items li h3 {font-size:16px; margin-top:10px; padding:0 5px;  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
-
-				#gallery .items li:hover .thumbnail_container {border:3px solid #f1c732}
-				#gallery .items li:hover h3 {color: #f1c732}
-		 
-
-	#submissiondiag {width:80%; margin-left:-40%;}
-		#submissiondiag img {float: left; width: auto; max-width: 45%; max-height: 55%}
-		#submissiondiag article {margin-left:50%}
-		#submissiondiag p {margin:20px 0; font-size:18px}
-		#submissiondiag aside {font-size:13px; color:#999}
-		#submissiondiag .note {margin:10px 0; font-size:13px}
-
-/* Privacy */
-#privacy {
-	display:none; background:#eee; padding:40px; overflow: hidden;     border: 2px solid #eee;
-	margin-top: -2px;
-}
-
-.page-privacy { }
-  .page-privacy .payoff {display:none}
-	.page-privacy p {margin:10px 0}
-	.page-privacy h3 {font-size:20px; margin:45px 0 10px 0; text-transform:uppercase }
-		.page-privacy h3.title {font-size:39px; margin:10px 0 45px 0}
-	.page-privacy h4 {font-size:16px;  margin:30px 0 10px 0; text-transform:uppercase }
-	.page-privacy h5 {font-size: 16px;line-height: 22px;margin:15px; color:#444; text-transform:uppercase}
-	.page-privacy li div {margin-left:20px}
-		.page-privacy li div.svc {padding:20px 20px 10px 20px; width:80%; margin-top:20px; border:1px solid #ccc; }
-			.page-privacy li div.svc h4 {margin-top:0}
-
-	.page-privacy table {border-collapse: collapse; width:100%; max-width: 700px}
-	.page-privacy th, .page-privacy td {border:1px solid #666; padding:5px;}
-	.page-privacy th {font-weight: bold; background: #ddd}
-
-			
-
 
 /* Resultion adjustments */
 @media only screen and (max-width: 840px) {

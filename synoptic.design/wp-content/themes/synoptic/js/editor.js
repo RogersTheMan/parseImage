@@ -1,9 +1,9 @@
 /* Based on jQuery Canvas Area Draw plugin - Copyright 2013 Fahrenheit Marketing
  * http://fahrenheitmarketing.com/ - License available on https://github.com/fahrenheit-marketing/jquery-canvas-area-draw/blob/master/LICENSE.txt 
  *
- *	Heavily edited by Daniele Perilli - https://www.sqlbi.com
+ *	Heavily edited by OrçaKids
  *	
- *	Version: 1.9.2 (2017.04.28)
+ *	Version: 1.0.0
  */
 
 (function( $ ){
@@ -123,8 +123,6 @@
 			var $svg = $canvas.find('svg');
 			
 			passedAreas = getAreasFromSVG($svg);
-			
-			//Detect if normal SVG or embedded image and areas
 			if ($svg.is('.gen-by-synoptic-designer')) {
 				isSVG = false;
 				passedImage = $svg.find('image').attr('xlink:href');
@@ -811,7 +809,7 @@
 			if (points.length >= 2) {
 		
 				context.fillStyle = '#ffffff';
-				context.strokeStyle = '#ffc200'; 
+				context.strokeStyle = '#005fe8'; 
 				context.lineWidth = 2;
 				
 				context.beginPath();
@@ -834,7 +832,7 @@
 				}
 				context.closePath();
 				
-				context.fillStyle = (!hasCustomContext && index == activeShape ? 'rgba(254,210,71,0.7)' : 'rgba(254,210,71,0.3)');
+				context.fillStyle = (!hasCustomContext && index == activeShape ? 'rgba(4,4,58,0.7)' : 'rgba(0,9,232,0.3)');
 				context.fill();
 				context.stroke();
 	
@@ -845,7 +843,7 @@
 					var name = $(info + ' #shape' + index + ' .binding').val();
 					var text = (title != '' ? title : (name != '' ? name : index + 1));
 					
-					context.fillStyle = '#856c25';
+					context.fillStyle = '#fff';
 					
 					var baseFont = 16;
 					var metrics;

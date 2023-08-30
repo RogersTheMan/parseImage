@@ -14,8 +14,8 @@
 		
 		<link rel="icon" type="image/png" href="https://synoptic.design/wp-content/themes/synoptic/favicon.ico">
 	
-		<link rel="stylesheet" href="https://synoptic.design/wp-content/themes/synoptic/normalize.css">
-        <link rel="stylesheet" href="https://synoptic.design/wp-content/themes/synoptic/style.css">
+		<link rel="stylesheet" href="wp-content/themes/synoptic/normalize.css">
+        <link rel="stylesheet" href="wp-content/themes/synoptic/style.css">
 		
 		            <script>
                 var homeurl = 'https://synoptic.design/';
@@ -81,12 +81,8 @@ const cookieHelper = new CookieHelper({
             });
 </script>
 <meta name="generator" content="WordPress 6.3" />
-		
 	</head>
 	<body class="home blog post-timetable">
-	
-	<!--[if lt IE 7]><div class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</div>  <![endif]-->
-	
 <div class="wrapper">
 	
 	
@@ -124,23 +120,17 @@ const cookieHelper = new CookieHelper({
 					<button id="zoomin" title="Zoom In"><img src="https://synoptic.design/wp-content/themes/synoptic/images/plus.svg" height="14" width="14"></button>
 					
 				</div>
-				
-				<div class="gridgroup">
-					<input type="checkbox" id="showGrid"> <label for="showGrid">Grid</label> &nbsp;<span class="gridcontrol">(<a href="#" id="increaseGrid" title="Increase Grid size"><img src="https://synoptic.design/wp-content/themes/synoptic/images/plus.svg" height="8" width="8"></a> <a href="#" id="decreaseGrid" title="Decrease Grid size"><img src="https://synoptic.design/wp-content/themes/synoptic/images/minus.svg" height="8" width="8"></a> )</span><br>
-					<input type="checkbox" id="snapToGrid"> <label for="snapToGrid">Snap to Grid</label>
-				</div>
 			</div>
 			
 			<div id="uploader">
 				<form onsubmit="return false;">
-				<img src="https://synoptic.design/wp-content/themes/synoptic/images/addimage.svg" alt="" width="150" height="114"><br>
-				Drag an image here<br>
-				<a  href="#" id="showRemote">or insert an image path/URL</a>
+				Arraste uma imagem<br>
+				<a  href="#" id="showRemote">ou adicione um arquivo</a>
 				<div id="remote">
 					<input type="file" id="file" accept="image/*">
-					<a href="#" id="browseImage" class="btn">Browse</a><input type="url" id="polygonURL" placeholder="or insert image URL" value="" class="txt">
+					<a href="#" id="browseImage" class="btn">Buscar arquivo</a>
 					 &nbsp; 
-					<a href="#" id="getImage" class="btn">Get</a> 
+					<a href="#" id="getImage" class="btn" style="display: none;">Get</a> 
 				</div>
 				</form>
 			</div>
