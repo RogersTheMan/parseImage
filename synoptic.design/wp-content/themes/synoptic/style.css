@@ -30,12 +30,12 @@ img {vertical-align:middle; }
 	img.fr {margin:0 0 20px 30px}
 .hidden { display: none !important; visibility: hidden; }
 fieldset { border: 0; margin: 0; padding: 0; }
-textarea { resize: vertical; }
+textarea { resize: none; }
 input:focus, select:focus, textarea:focus, button:focus, a:focus { outline: none;}
 input::-moz-focus-inner {  border: 0; }
 hr { display: block; clear:both;  height: 1px; border: 0; border-top: 1px solid #e6e6e6; padding:0 0 40px 0; margin: 40px 0 0 0;  }
 code {font-family:'Consolas', monospace; display:block; padding:20px; background:#fff;  }
-::selection { background: #f1c732; color: #000; text-shadow: none; }
+::selection { background: #005fe8; color: #000; text-shadow: none; }
 address {font-style:normal}
 .prn {display:none !important} 
 .tablet, .mobile {display:none}
