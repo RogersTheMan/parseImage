@@ -1,0 +1,85 @@
+User-agent: GPTBot
+Disallow: /articles/
+Disallow: /whitepapers/
+Disallow: /wp-content/
+
+User-agent: serpstatbot
+Disallow: /
+
+User-agent: Seekport Crawler
+Disallow: /
+
+User-agent: AwarioSmartBot
+Disallow: /
+
+User-agent: MTRobot
+Disallow: /
+
+User-agent: MauiBot (crawler.feedback+wc@gmail.com)
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: SemrushBot-SA
+Disallow: /
+
+User-agent: SemrushBot-BA
+Disallow: /
+
+User-agent: SemrushBot-SI
+Disallow: /
+
+User-agent: SemrushBot-SWA
+Disallow: /
+
+User-agent: SemrushBot-CT
+Disallow: /
+
+User-agent: SemrushBot-BM
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+User-agent: rogerbot
+Disallow: /
+
+User-agent: app.limber.io
+Disallow: /
+
+User-agent: Screaming Frog SEO Spider
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: AwarioSmartBot
+Disallow: /
+
+User-agent: AwarioRssBot
+Disallow: /
+
+User-agent: crawler
+Disallow: /
+
+User-agent: *
+Disallow: /wp-admin/
+Disallow: /u/
+Disallow: /cert/
+Disallow: /learn/
+Disallow: /account/
+Disallow: /cart/
+Disallow: /checkout/
