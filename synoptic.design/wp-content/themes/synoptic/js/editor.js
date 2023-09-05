@@ -160,7 +160,7 @@
 		$menu = $('<div class="contextmenu"><ul><li data-action="delete">' + (isSVG ? 'Unbind area' : 'Delete area') + '</li></ul>' + (isSVG ? '' : '<div class="note">Right click on single <br>anchor to delete it</div>') + '</div>').appendTo($this);
 
 		$(document).on('focus', info + ' input, ' + info + ' textarea', function(){
-			var s = parseInt($(this).parent('div').attr('id').replace('shape', ''));
+			var s = parseInt($(this).parent('section').parent('div').attr('id').replace('shape', ''));
 			activeShape = s;
 			draw();
 			update(false);
@@ -216,7 +216,7 @@
 
 		$(document).on('change', info + ' .coords', function() {
 			
-			var s = parseInt($(this).parent('div').attr('id').replace('shape', ''));		
+			var s = parseInt($(this).parent('section').parent('div').attr('id').replace('shape', ''));		
 			if ($(this).val().length) {
 				shapes[s] = $(this).val().split(',').map(function(point) {
 					return (isNaN(point) ? false : parseInt(point));
@@ -240,7 +240,7 @@
 		$(document).on('click', info + ' .trash, ' + info + ' .binder', function(e){
 			e.preventDefault();
 			
-			var $p = $(this).parent('div');
+			var $p = $(this).parent('section').parent('div');
 			var s = parseInt($p.attr('id').replace('shape', ''));
 			
 			if (confirm('Are you sure to delete area ' + (s+1) + '?')){	
@@ -553,7 +553,20 @@
 		
 		$(info + ' aside em').hide();
 		$('#export').removeClass('disabled');
-		$(info + ' aside').append('<div id="shape' + activeShape + '" class="active"> <div style="display:flex; align-items:center;"><p class="binding">' +shapeDefaultName(activeShape) + '</p> <input type="text" class="title txt" placeholder="Nome da Área" value=""> </div> <br><div style="display:flex; align-items:center;"><a href="#" class="action-btn trash" title="Delete area"><img src="' + imagesPath + 'remove.svg" width="17" height="17"></a> <textarea class="coords"></textarea> <div></div>');
+		//$(info + ' aside').append('<div id="shape' + activeShape + '" class="active"> <input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="' + shapeDefaultName(activeShape) + '" data-auto="1"><br><input type="text" class="title txt" placeholder="Digite o nome da área" value=""> <a href="#" class="action-btn trash" title="Delete area"><img src="' + imagesPath + 'remove.svg" width="17" height="17"></a><textarea class="coords"></textarea></div>');
+		$(info + ' aside').append(`
+		<div id="shape${activeShape}" class="active">
+		  <section style="display:flex; align-items:center;"> 
+        <input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="${shapeDefaultName(activeShape)}" data-auto="1">
+        <input type="text" class="title txt" placeholder="Nome da Área" value=""> 
+      </section> <br>
+      <section style="display:flex; align-items:center;">
+        <a href="#" class="action-btn trash" title="Delete area">
+          <img src="${imagesPath}remove.svg" width="17" height="17">
+        </a> 
+        <textarea class="coords"></textarea>
+      </section>
+    </div>`);
 		
 	};
 	
@@ -578,6 +591,8 @@
 			$(info + ' div').each(function(idx, element) {
 				$(this).attr('id', 'shape' + idx);
 				var $desc = $(this).find('.binding');
+				console.log(info)
+				console.log($desc)
 				if ($desc.data('auto') == '1') 
 					$desc.val(shapeDefaultName(idx));
 			});	
