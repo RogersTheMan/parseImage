@@ -1,9 +1,17 @@
+/* Based on jQuery Canvas Area Draw plugin - Copyright 2013 Fahrenheit Marketing
+ * http://fahrenheitmarketing.com/ - License available on https://github.com/fahrenheit-marketing/jquery-canvas-area-draw/blob/master/LICENSE.txt 
+ *
+ *	Heavily edited by OrçaKids
+ *	
+ *	Version: 1.0.0
+ */
+
 (function( $ ){
 	
 	var $this, $canvas, $menu, ctx, info, mapImage, shapes, activeShape, activePoint, canvasPoint, shapePoints, createNewShape, autoCreateNewShape, anchorLastTime, imageColors, grabbingTimeout;
 	var isMarching = false;
 	var isSVG = false;
-	var tools = ['magicwand', 'crosshair', 'default', 'grab'];
+	var tools = ['crosshair', 'default', 'grab'];
 	var currentTool = tools[0];
 	var w, h, actualW, actualH;
 
@@ -108,24 +116,6 @@
 		var passedImage = options.image;
 		var passedAreas;
 
-		if (isSVG) {
-			$canvas = $('<div id="canvas">');
-			$canvas.append(passedImage);
-	
-			var $svg = $canvas.find('svg');
-			
-			passedAreas = getAreasFromSVG($svg);
-			
-			//Detect if normal SVG or embedded image and areas
-			if ($svg.is('.gen-by-synoptic-designer')) {
-				isSVG = false;
-				passedImage = $svg.find('image').attr('xlink:href');
-			} else {
-				resize();
-				if (options.onSuccess)
-					options.onSuccess(true);
-			}
-		} 
 
 		$this.trigger('canvasAreaDraw.telemetry', {
 			action: 'import', 
@@ -160,7 +150,7 @@
 					options.onSuccess(false);
 			}
 		}
-		$this.prepend($canvas);
+		$this.append($canvas);
 
 		resetInfoArea();
 		
@@ -170,15 +160,8 @@
 		$menu = $('<div class="contextmenu"><ul><li data-action="delete">' + (isSVG ? 'Unbind area' : 'Delete area') + '</li></ul>' + (isSVG ? '' : '<div class="note">Right click on single <br>anchor to delete it</div>') + '</div>').appendTo($this);
 
 		$(document).on('focus', info + ' input, ' + info + ' textarea', function(){
-			var s = parseInt($(this).parent('div').attr('id').replace('shape', ''));
+			var s = parseInt($(this).parent('section').parent('div').attr('id').replace('shape', ''));
 			activeShape = s;
-			
-			if (isSVG) {
-				$canvas.find('.area').removeClassSVG('active');
-				$canvas.find('#' + shapes[s]).addClassSVG('active');
-				console.log('#' + shapes[s]);
-			}
-			
 			draw();
 			update(false);
 		});
@@ -233,7 +216,7 @@
 
 		$(document).on('change', info + ' .coords', function() {
 			
-			var s = parseInt($(this).parent('div').attr('id').replace('shape', ''));		
+			var s = parseInt($(this).parent('section').parent('div').attr('id').replace('shape', ''));		
 			if ($(this).val().length) {
 				shapes[s] = $(this).val().split(',').map(function(point) {
 					return (isNaN(point) ? false : parseInt(point));
@@ -257,51 +240,16 @@
 		$(document).on('click', info + ' .trash, ' + info + ' .binder', function(e){
 			e.preventDefault();
 			
-			var $p = $(this).parent('div');
+			var $p = $(this).parent('section').parent('div');
 			var s = parseInt($p.attr('id').replace('shape', ''));
 			
-			if (isSVG) {
-				if ($(this).is('.disabled')) return false;
-
-				var isSel = $(this).is('.selected');
-				if (isSel) {
-					$(this).removeClass('selected');
-					$p.removeClass('active').addClass('excluded');
-					removeShape(s);
-				} else {
-					$(this).addClass('selected');
-					$p.removeClass('excluded');
-					$canvas.find('#' + shapes[s]).removeClassSVG('excluded');
-				}
+			if (confirm('Tem certeza que deseja excluir a área ' + (s+1) + '?')){	
+				removeShape(s);
 				
-				var traverse = function(t){
-					$('.child' + t).each(function(){
-						var c = parseInt($(this).attr('id').replace('shape', ''));
-						if (isSel) {
-							$(this).find('.binder').removeClass('selected').addClass('disabled');
-							$(this).addClass('excluded');
-							$canvas.find('#' + shapes[c]).addClassSVG('excluded');
-
-						} else {
-							$(this).removeClass('excluded');
-							$(this).find('.binder').removeClass('disabled').addClass('selected');
-							$canvas.find('#' + shapes[c]).removeClassSVG('excluded');
-						}
-						
-						traverse(c);
-					});
-				};
-				traverse(s);
-				
-				
-			} else {
-				if (confirm('Are you sure to delete area ' + (s+1) + '?')){	
-					removeShape(s);
-					
-					draw();
-					update();
-				}
+				draw();
+				update();
 			}
+
 		});
 		
 		$('.contextmenu li').on('click', function(e){
@@ -357,24 +305,15 @@
 	var resize = function() {
 		
 		var bottomOffset = 60;
-		if (isSVG) {
-			var $svg = $canvas.find('svg');
-			$svg.attr({
-				'width': '100%',
-				'height': '100%'
-			});
-			$canvas.css({
-				'height': $this.height() - bottomOffset
-			});
-		} else {
-			w = mapImage.width;
-			h = mapImage.height;
-			
-			$canvas.attr({
-				'width': Math.max($this.width(), w),
-				'height': $this.height() - bottomOffset 
-			});
-		}
+
+		w = mapImage.width;
+		h = mapImage.height;
+		
+		$canvas.attr({
+			'width': Math.max($this.width(), w),
+			'height': $this.height() - bottomOffset 
+		});
+
 
 		
 		$(info + ' aside').css('height', $canvas.height() - infoOffset);
@@ -390,27 +329,17 @@
 		if (info && $canvas) {
 			
 			$(info).toggleClass('svg', isSVG);
-			$(info).html('');
-			
-			/*if (isSVG) 
-				$(info).append('<div class="filter"><input type="checkbox" id="filter" name="filter"> <label for="filter">Hide excluded</label></div>');
-			*/	
-			$(info).append('<aside><em>No area defined yet, click on the map image to add new.</em></aside>');
+			$(info).html('');	
+			$(info).append('<aside><em>Nenhuma área definida, clique na imagem para criar!</em></aside>');
 			$(info + ' aside').css('height', $canvas.height() - infoOffset);
 			
-			$(info).append('<a href="#" id="export" class="btn disabled">Export to Power BI</a> <a href="#" id="publish" class="btn">Submit to Gallery</a>');
+			$(info).append('<a href="#" id="export" class="btn disabled" download>Salvar</a>');
 			$(exportDialog).jqm();
 			$(publishDialog).jqm();
 
 			$('#export').on('click', function(e){
-				e.preventDefault();
 				if (!$(this).hasClass('disabled')) {
-					
-					$this.trigger('canvasAreaDraw.telemetry', {
-						action: 'export', 
-						isSVG: isSVG, 
-						shapes: shapes.length
-					});
+				
 					
 
 					var is_iedge = (/MSIE/i.test(navigator.userAgent) || 
@@ -418,19 +347,18 @@
 									/Edge\/\d./i.test(navigator.userAgent));
 
 					if (is_iedge) {
-						$(exportDialog + ' .image_container').html(getMap(false, false));
+
 						
 					} else {
 						var dataURL = getMap(false, true);
-						$(exportDialog + ' .image_container').html('<a href="' + dataURL + '" target="_blank"><img src="' + dataURL + '"></a>'); 
+						console.log(dataURL)
+						$(this)[0].href = dataURL
+
 					}
 					
-
-					//$(exportDialog + ' #data').val(dataURL);
 					$(exportDialog).jqmShow(); 
 				}
 			});
-			
 			$('#publish').on('click', function(e){
 				e.preventDefault();
 				
@@ -526,8 +454,6 @@
 
 	var getAreasJSONString = function(anonymize) {
 		
-		if (isSVG) return '';
-		
 		var bigStr = '{"areas":[';
 		for (var s = 0; s < shapes.length; s++) {
 			var desc = $(info + ' #shape' + s + ' .binding').val();
@@ -562,10 +488,7 @@
 			for (var a = 0; a < json.areas.length; a++) {
 				var area = json.areas[a];
 				var value;
-				if (isSVG)
-					value = area.id;
-				else
-					value = area.coords.reduce(function(a, b) {return a.concat(b);}, []);
+				value = area.coords.reduce(function(a, b) {return a.concat(b);}, []);
 				
 				addShape();
 				shapes[activeShape] = value;
@@ -593,7 +516,7 @@
 	};
 	
 	var setCursor = function(cursor) {
-		var classes = ['default', 'crosshair', 'magicwand', 'grab', 'grabbing'];
+		var classes = ['default', 'crosshair', 'grab', 'grabbing'];
 		if (typeof(cursor) === 'undefined' || !cursor) 
 			cursor = currentTool;
 
@@ -630,43 +553,49 @@
 		
 		$(info + ' aside em').hide();
 		$('#export').removeClass('disabled');
-		$(info + ' aside').append('<div id="shape' + activeShape + '" class="active">' + (isSVG ? '<div class="crumb"></div>' : '') + '<input type="text" class="binding txt" placeholder="Area name (to bind)" value="' + shapeDefaultName(activeShape) + '" data-auto="1"> &nbsp;' + (isSVG ? '<a href="#" class="action-btn binder selected" title="Include/Exclude area from data binding">BIND</a>' : '<a href="#" class="action-btn trash" title="Delete area"><img src="' + imagesPath + 'remove.svg" width="17" height="17"></a>') + '<br><input type="text" class="title txt" placeholder="Area name (to display)" value="">' + (isSVG ? '' : '<textarea class="coords"></textarea>') + '</div>');
+		//$(info + ' aside').append('<div id="shape' + activeShape + '" class="active"> <input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="' + shapeDefaultName(activeShape) + '" data-auto="1"><br><input type="text" class="title txt" placeholder="Digite o nome da área" value=""> <a href="#" class="action-btn trash" title="Delete area"><img src="' + imagesPath + 'remove.svg" width="17" height="17"></a><textarea class="coords"></textarea></div>');
+		$(info + ' aside').append(`
+		<div id="shape${activeShape}" class="active">
+		  <section style="display:flex; align-items:center; justify-content: space-evenly;"> 
+			<input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="${shapeDefaultName(activeShape)}" data-auto="1">
+			<input type="text" class="title txt" placeholder="Nome da Área" value=""> 
+			</section> <br>
+			<section style="display:flex; align-items:center; justify-content: space-evenly;">
+				<a href="#" class="action-btn trash" style:="border:none !important;" title="Deletar Área">
+					<i class="fa-solid fa-trash"></i>
+				</a> 
+				<textarea class="coords"></textarea>
+			</section>
+		</div>`);
 		
 	};
 	
 	var removeShape = function(index){
 	
-		activeShape = -1;
-		activePoint = -1;
-		
-		if (isSVG) {
-			
-			$canvas.find('#' + shapes[index]).removeClassSVG('active').addClassSVG('excluded');
-			
+	activeShape = -1;
+	activePoint = -1;
+		if (index == -1 || shapes.length == 1 || index >= shapes.length ) {
+			//Remove all
+			shapes.length = 0;
+			resetInfoArea();
+			if (index == -1)
+				resetZoom();
 			
 		} else {
 			
-			if (index == -1 || shapes.length == 1 || index >= shapes.length ) {
-				//Remove all
-				shapes.length = 0;
-				resetInfoArea();
-				if (index == -1)
-					resetZoom();
-				
-			} else {
-				
-				//Remove single
-				shapes.splice(index, 1);	
-				
-				$(info + ' #shape' + index).remove();
-				
-				$(info + ' div').each(function(idx, element) {
-					$(this).attr('id', 'shape' + idx);
-					var $desc = $(this).find('.binding');
-					if ($desc.data('auto') == '1') 
-						$desc.val(shapeDefaultName(idx));
-				});	
-			}
+			//Remove single
+			shapes.splice(index, 1);	
+			
+			$(info + ' #shape' + index).remove();
+			
+			$(info + ' div').each(function(idx, element) {
+				$(this).attr('id', 'shape' + idx);
+				var $desc = $(this).find('.binding');
+				console.log(info)
+				console.log($desc)
+				if ($desc.data('auto') == '1') 
+					$desc.val(shapeDefaultName(idx));
+			});	
 		}
 	};
 	
@@ -713,22 +642,7 @@
 	var getMap = function(anonymize, base64) {
 		
 		var svg = '';
-		if (isSVG) {
-			
-			for (var s = 0; s < shapes.length; s++) {
-				var name = $(info + ' #shape' + s + ' .binding').val();
-				if (name == '' || anonymize) name = (s + 1).toString();
- 
-				var title = $(info + ' #shape' + s + ' .title').val();
-				$canvas.find('#' + shapes[s]).attr('id', getLegalId(name)).attr('title', title); 
-				shapes[s] = name;
-			}
-		
-			svg = $canvas.html(); //$canvas.find('svg')[0].outerHTML; //Don't work in IE/Edge
-
-		} else {
-			
-			svg = '<svg version="1.1" id="Map" class="gen-by-synoptic-designer" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ' + w + ' ' + h + '" xml:space="preserve"><image width="' + w + '" height="' + h + '" xlink:href="' + mapImage.src + '" />';
+			svg = '<svg version="1.1" id="Map" class="gerado-por-vetorizador-of" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ' + w + ' ' + h + '" xml:space="preserve"><image width="' + w + '" height="' + h + '" xlink:href="' + mapImage.src + '" />';
 			
 			for (var s = 0; s < shapes.length; s++) {
 				var name = $(info + ' #shape' + s + ' .binding').val();
@@ -741,7 +655,6 @@
 			}
 			
 			svg += '</svg>';
-		}
 
 		if (base64)
 			return 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svg)));
@@ -750,50 +663,42 @@
 	};
 	
 	var getThumbnail = function(){
+		var format = 'jpeg';
+		var quality = 0.6;
 		
-		if (isSVG) {
-			return getMap(true, true);
-			
+		var scale = 1;
+		var maxWidthAllowed = 900;
+		if (mapImage.width > maxWidthAllowed)
+			scale = maxWidthAllowed / mapImage.width;
+		
+		var $canvas2 = $('<canvas>');
+		$canvas2.attr('width', mapImage.width).attr('height', mapImage.height);
+
+		var ctx2 = $canvas2[0].getContext('2d');
+		draw(ctx2);
+		
+		if (format == 'jpeg') {
+			ctx2.globalCompositeOperation = 'destination-over';
+			ctx2.fillStyle = '#ffffff';
+			ctx2.fillRect(0, 0, mapImage.width, mapImage.height);
+		}
+		
+		
+		if (scale >= 1) {
+			return $canvas2[0].toDataURL('image/' + format, quality);
 		} else {
-			var format = 'jpeg';
-			var quality = 0.6;
-			
-			var scale = 1;
-			var maxWidthAllowed = 900;
-			if (mapImage.width > maxWidthAllowed)
-				scale = maxWidthAllowed / mapImage.width;
-			
-			var $canvas2 = $('<canvas>');
-			$canvas2.attr('width', mapImage.width).attr('height', mapImage.height);
-	
-			var ctx2 = $canvas2[0].getContext('2d');
-			draw(ctx2);
-			
-			if (format == 'jpeg') {
-				ctx2.globalCompositeOperation = 'destination-over';
-				ctx2.fillStyle = '#ffffff';
-				ctx2.fillRect(0, 0, mapImage.width, mapImage.height);
-			}
-			
-			
-			if (scale >= 1) {
-				return $canvas2[0].toDataURL('image/' + format, quality);
-			} else {
-				var scaledW = mapImage.width * scale;
-				var scaledH = mapImage.height * scale;
-				var $canvas3 = $('<canvas>');
-				var ctx3 = $canvas3[0].getContext('2d');
-				$canvas3.attr('width', scaledW).attr('height', scaledH);
-				ctx3.drawImage($canvas2[0], 0, 0, scaledW, scaledH);
-				return $canvas3[0].toDataURL('image/' + format, quality);
-			}
+			var scaledW = mapImage.width * scale;
+			var scaledH = mapImage.height * scale;
+			var $canvas3 = $('<canvas>');
+			var ctx3 = $canvas3[0].getContext('2d');
+			$canvas3.attr('width', scaledW).attr('height', scaledH);
+			ctx3.drawImage($canvas2[0], 0, 0, scaledW, scaledH);
+			return $canvas3[0].toDataURL('image/' + format, quality);
 		}
 	};
 	
 	//Drawing canvas
 	var draw = function(passedContext) {
-		if (isSVG) return;
-	
 		var hasCustomContext = (typeof(passedContext) !== 'undefined');
 		var context = (hasCustomContext ? passedContext : ctx);
 		
@@ -810,7 +715,7 @@
 			if (points.length >= 2) {
 		
 				context.fillStyle = '#ffffff';
-				context.strokeStyle = '#ffc200'; 
+				context.strokeStyle = '#005fe8'; 
 				context.lineWidth = 2;
 				
 				context.beginPath();
@@ -833,7 +738,7 @@
 				}
 				context.closePath();
 				
-				context.fillStyle = (!hasCustomContext && index == activeShape ? 'rgba(254,210,71,0.7)' : 'rgba(254,210,71,0.3)');
+				context.fillStyle = (!hasCustomContext && index == activeShape ? 'rgba(4,4,58,0.7)' : 'rgba(0,9,232,0.3)');
 				context.fill();
 				context.stroke();
 	
@@ -844,7 +749,7 @@
 					var name = $(info + ' #shape' + index + ' .binding').val();
 					var text = (title != '' ? title : (name != '' ? name : index + 1));
 					
-					context.fillStyle = '#856c25';
+					context.fillStyle = '#fff';
 					
 					var baseFont = 16;
 					var metrics;
@@ -879,11 +784,7 @@
 		
 		if (z == 6) {
 			actualZoom = 100;
-			if (isSVG) {
-				//TODO
-			} else {
-				ctx.setTransform(1,0,0,1,0,0);
-			}
+			ctx.setTransform(1,0,0,1,0,0);
 			actualW = w;
 			actualH = h;
 			draw();
@@ -896,17 +797,11 @@
 					e.offsetX = (e.pageX - $(e.target).offset().left);
 					e.offsetY = (e.pageY - $(e.target).offset().top);
 				}
-				if (isSVG)
-					pt = {x: e.offsetX, y: e.offsetY};
-				else
-					pt = ctx.transformedPoint(e.offsetX, e.offsetY);
+				pt = ctx.transformedPoint(e.offsetX, e.offsetY);
 				scale = Math.pow(scaleFactor, e.deltaY);
 				
 			} else {
-				if (isSVG)
-					pt = {x: w/2, y: h/2};
-				else
-					pt = ctx.transformedPoint(w/2, h/2);
+				pt = ctx.transformedPoint(w/2, h/2);
 				scale = ((availableZooms[z] * w) / actualW) / 100;
 			}
 
@@ -926,15 +821,9 @@
 			}
 			actualW *= scale;
 			actualH *= scale;
-			
-			if (isSVG) {
-				
-			} else {
-				ctx.translate(pt.x,pt.y);
-				ctx.scale(scale, scale);
-				ctx.translate(-pt.x,-pt.y);
-			}
-			
+			ctx.translate(pt.x,pt.y);
+			ctx.scale(scale, scale);
+			ctx.translate(-pt.x,-pt.y);
 			draw();
 		}
 		
@@ -957,8 +846,6 @@
 	
 	//On Mouse Move (single anchor)
 	var moveAnchor = function(e) {
-	
-		if (isSVG) return false;
 		
 		if (activeShape >= 0) {
 			setCursor('default');
@@ -988,8 +875,6 @@
 
 	//On Mouse Move (shape)	
 	var moveShape = function(e){
-		
-		if (isSVG) return false;
 		
 		if (shapePoints && canvasPoint) {
 			
@@ -1030,20 +915,15 @@
 				e.offsetX = (e.pageX - $(e.target).offset().left);
 				e.offsetY = (e.pageY - $(e.target).offset().top);
 			}
-			if (isSVG) {
-				//TODO
-			} else {
-				var pt = ctx.transformedPoint(e.offsetX, e.offsetY);
-				ctx.translate(pt.x-canvasPoint.x, pt.y-canvasPoint.y);
-				draw();
-			}
+			var pt = ctx.transformedPoint(e.offsetX, e.offsetY);
+			ctx.translate(pt.x-canvasPoint.x, pt.y-canvasPoint.y);
+			draw();
+			
 		}
 	};
 	
 	//On Mouse Move (global)
 	var mouseMove = function(e){
-		
-		if (isSVG) return false;
 		
 		if (currentTool != 'grab') {
 			if(!e.offsetX) {
@@ -1085,8 +965,6 @@
 		$this.trigger('canvasAreaDraw.grabend');
 		$this.trigger('canvasAreaDraw.selectend');
 		setCursor();
-		
-		if (isSVG) return false;
 		
 		$canvas.off('mousemove').on('mousemove', mouseMove);
 		
@@ -1150,43 +1028,29 @@
 		for (var s = 0; s < shapes.length; s++) {
 			
 			var isInPoly = false;
-			
-			if (isSVG) {
-				
-				var elementId = e.target.id;
-				var $group = $(e.target).closest('g');
-				if (!elementId && $group.length > 0) 
-					elementId = $group.attr('id');
-					
-				if (elementId)
-					isInPoly = (shapes[s] == elementId);
-				
-			} else {
-				
-				if(!e.offsetX) {
-					e.offsetX = (e.pageX - $(e.target).offset().left);
-					e.offsetY = (e.pageY - $(e.target).offset().top);
-				}
-				var pt = ctx.transformedPoint(e.offsetX, e.offsetY);
-		
-				for (var i = 0; i < shapes[s].length; i+=2) {
-					var dis = Math.sqrt(Math.pow(pt.x - shapes[s][i], 2) + Math.pow(pt.y - shapes[s][i+1], 2));
-					if (dis < 4) {
-						$(".contextmenu").hide(100);
-						activeShape = s;
-						shapes[s].splice(i, 2);
-						if (shapes[s].length == 0)
-							removeShape(s);
-		
-						draw();
-						update();
-						
-						return false;
-					}
-				}
-				
-				isInPoly = isPointInPoly(shapes[s], pt);
+			if(!e.offsetX) {
+				e.offsetX = (e.pageX - $(e.target).offset().left);
+				e.offsetY = (e.pageY - $(e.target).offset().top);
 			}
+			var pt = ctx.transformedPoint(e.offsetX, e.offsetY);
+	
+			for (var i = 0; i < shapes[s].length; i+=2) {
+				var dis = Math.sqrt(Math.pow(pt.x - shapes[s][i], 2) + Math.pow(pt.y - shapes[s][i+1], 2));
+				if (dis < 4) {
+					$(".contextmenu").hide(100);
+					activeShape = s;
+					shapes[s].splice(i, 2);
+					if (shapes[s].length == 0)
+						removeShape(s);
+	
+					draw();
+					update();
+					
+					return false;
+				}
+			}
+			
+			isInPoly = isPointInPoly(shapes[s], pt);
 			
 			if (isInPoly) {
 				activeShape = s;
@@ -1218,186 +1082,140 @@
 		}
 		
 		e.preventDefault();
+
+		var dis, lineDis, insertAt;
+		var points;
 		
+		createNewShape = false;
+		autoCreateNewShape = false;
 		
-		if (isSVG) {
-			
-			if (currentTool == 'grab') {
+		var currentShapePoints = (activeShape < 0 ? 4 : shapes[activeShape].length / 2);
+		var canvasTouched = (currentShapePoints >= 4);
+
+		if(!e.offsetX) {
+			e.offsetX = (e.pageX - $(e.target).offset().left);
+			e.offsetY = (e.pageY - $(e.target).offset().top);
+		}
+	
+		var pt = ctx.transformedPoint(e.offsetX, e.offsetY);
+
+	
+		if (currentTool != 'grab') {
+
+			if (currentShapePoints >= 3 || currentTool == 'default') {
 				
-				//TODO
-				
-			} else {
-				
-				var elementId = e.target.id;
-				/*var $group = $(e.target).closest('g');
-				if (!elementId && $group.length > 0) 
-					elementId = $group.attr('id');
-				*/
-				if (elementId) {
-					for (var s = 0; s < shapes.length; s++) {
-						if (shapes[s] == elementId) {
-		
+				//Check if anchor point touched
+				for (var s = 0; s < shapes.length; s++) {
+					for (var i = 0; i < shapes[s].length; i+=2) {
+						dis = Math.sqrt(Math.pow(pt.x - shapes[s][i], 2) + Math.pow(pt.y - shapes[s][i+1], 2));
+
+						if ( dis < 4 ) {
 							activeShape = s;
+							activePoint = i;
 							$this.trigger('canvasAreaDraw.selectstart');
-							$(info + ' input').blur();
-							
-							$canvas.find('.area').removeClassSVG('active');
-							$canvas.find('#' + shapes[s]).addClassSVG('active');
-				
+							$canvas.off('mousemove').on('mousemove', moveAnchor);
 							update();
 							return false;
-							
 						}
 					}
 				}
-				/*if ($(e.target).is('.excluded')) {
-					addShape();
-					shapes[activeShape] = elementId;
 
-					$('#shape' + activeShape + ' .binding').val(getSVGName(e.target)).data('auto', '0');
-					$('#shape' + activeShape + ' .title').val($(e.target).attr('title'));
-					$canvas.find('.area').removeClassSVG('active');
-					$(e.target).addClassSVG('area active');
-					update();
-				}*/
-			}
-			
-		} else {
-	
-			var dis, lineDis, insertAt;
-			var points;
-			
-			createNewShape = false;
-			autoCreateNewShape = false;
-			
-			var currentShapePoints = (activeShape < 0 ? 4 : shapes[activeShape].length / 2);
-			var canvasTouched = (currentShapePoints >= 4);
 
-			if(!e.offsetX) {
-				e.offsetX = (e.pageX - $(e.target).offset().left);
-				e.offsetY = (e.pageY - $(e.target).offset().top);
-			}
+				//Check if mouse inside a shape
+				for (var s = 0; s < shapes.length; s++) {
+					if (isPointInPoly(shapes[s], pt)) {
 		
-			var pt = ctx.transformedPoint(e.offsetX, e.offsetY);
-
-		
-			if (currentTool != 'grab') {
-	
-				if (currentShapePoints >= 3 || currentTool == 'default') {
-					
-					//Check if anchor point touched
-					for (var s = 0; s < shapes.length; s++) {
-						for (var i = 0; i < shapes[s].length; i+=2) {
-							dis = Math.sqrt(Math.pow(pt.x - shapes[s][i], 2) + Math.pow(pt.y - shapes[s][i+1], 2));
-	
-							if ( dis < 4 ) {
-								activeShape = s;
-								activePoint = i;
-								$this.trigger('canvasAreaDraw.selectstart');
-								$canvas.off('mousemove').on('mousemove', moveAnchor);
-								update();
-								return false;
-							}
-						}
-					}
-	
-	
-					//Check if mouse inside a shape
-					for (var s = 0; s < shapes.length; s++) {
-						if (isPointInPoly(shapes[s], pt)) {
-			
-							var lastActive = activeShape;
-							activeShape = s;
-							points = shapes[s];
-							canvasTouched = false;
-							
-							//if (currentTool == 'default') {
-								shapePoints = points.slice(0);
-								canvasPoint = pt;
-								setCursor('default');
-								$canvas.off('mousemove').on('mousemove', moveShape);
-							//}
-							
-							//Just select
-							if (activeShape != lastActive || currentTool != 'crosshair') {
-								$this.trigger('canvasAreaDraw.selectstart');
-								$(info + ' input, ' + info + ' textarea').blur();
-								draw();
-								update();
-								
-								return false;	
-							}
-							
-							break;
-						}
-					}
-				}
-				
-			}
-			
-			if (currentTool == 'crosshair') {
-				
-				//Continue to add anchor if fast clicks
-				if (canvasTouched && activeShape >= 0) {	
-					
-					var minMs = 800;
-					var now = new Date().getTime();
-					var ms = (now - anchorLastTime);
-					if (ms < minMs) 
+						var lastActive = activeShape;
+						activeShape = s;
+						points = shapes[s];
 						canvasTouched = false;
-				}
-	
-				//Ready to create a new shape or move
-				if (canvasTouched) {
-	
-					createNewShape = true;		
-					canvasPoint = pt;
-					prepareToMoveCanvas();
-					return false;
-				}
-	
-				//Add new anchor
-				points = shapes[activeShape];
-				insertAt = points.length;
-				for (var i = 0; i < points.length; i+=2) {
-					if (i > 1) {
-						lineDis = dotLineLength(
-							pt.x, pt.y,
-							points[i], points[i+1],
-							points[i-2], points[i-1],
-							true
-						);
-						if (lineDis < 4) {
-							insertAt = i;
+						
+						//if (currentTool == 'default') {
+							shapePoints = points.slice(0);
+							canvasPoint = pt;
+							setCursor('default');
+							$canvas.off('mousemove').on('mousemove', moveShape);
+						//}
+						
+						//Just select
+						if (activeShape != lastActive || currentTool != 'crosshair') {
+							$this.trigger('canvasAreaDraw.selectstart');
+							$(info + ' input, ' + info + ' textarea').blur();
+							draw();
+							update();
+							
+							return false;	
 						}
+						
+						break;
 					}
 				}
-				
-				if (snapToGrid)
-					points.splice(insertAt, 0, Math.round(pt.x / gridSize) * gridSize + gridPosition[0], Math.round(pt.y / gridSize) * gridSize + gridPosition[1]);
-				else
-					points.splice(insertAt, 0, Math.round(pt.x), Math.round(pt.y));
-					
-				activePoint = insertAt;
-				$canvas.off('mousemove').on('mousemove', moveAnchor);
-					
-				anchorLastTime = new Date().getTime();
-				
-				draw();
-				update();
-				
-			} else {
-				
-				if (currentTool == 'magicwand')
-					autoCreateNewShape = true;
-	
-				//move entire canvas
-				canvasPoint = pt;
-				prepareToMoveCanvas();
-				
 			}
+			
 		}
 		
+		if (currentTool == 'crosshair') {
+			
+			//Continue to add anchor if fast clicks
+			if (canvasTouched && activeShape >= 0) {	
+				
+				var minMs = 800;
+				var now = new Date().getTime();
+				var ms = (now - anchorLastTime);
+				if (ms < minMs) 
+					canvasTouched = false;
+			}
+
+			//Ready to create a new shape or move
+			if (canvasTouched) {
+
+				createNewShape = true;		
+				canvasPoint = pt;
+				prepareToMoveCanvas();
+				return false;
+			}
+
+			//Add new anchor
+			points = shapes[activeShape];
+			insertAt = points.length;
+			for (var i = 0; i < points.length; i+=2) {
+				if (i > 1) {
+					lineDis = dotLineLength(
+						pt.x, pt.y,
+						points[i], points[i+1],
+						points[i-2], points[i-1],
+						true
+					);
+					if (lineDis < 4) {
+						insertAt = i;
+					}
+				}
+			}
+			
+			if (snapToGrid)
+				points.splice(insertAt, 0, Math.round(pt.x / gridSize) * gridSize + gridPosition[0], Math.round(pt.y / gridSize) * gridSize + gridPosition[1]);
+			else
+				points.splice(insertAt, 0, Math.round(pt.x), Math.round(pt.y));
+				
+			activePoint = insertAt;
+			$canvas.off('mousemove').on('mousemove', moveAnchor);
+				
+			anchorLastTime = new Date().getTime();
+			
+			draw();
+			update();
+			
+		} else {
+			
+			if (currentTool == 'magicwand')
+				autoCreateNewShape = true;
+
+			//move entire canvas
+			canvasPoint = pt;
+			prepareToMoveCanvas();
+			
+		}
+	
 	  	return false;
 	};
 	
@@ -1436,82 +1254,6 @@
 	};
 	
 	//Copyright (c) 2015 - Daniele Perilli - daniele.perilli@gmail.com
-	//Find possible areas based on color proximity
-	var magicWand = function(x, y) {
-		var dbg = false; //Debug mode
-
-		var points = [];
-
-		var matchColor = function(px, py){
-			
-			var firstPixel = ((y * w) + x) * 4;
-			var pixel = ((py * w) + px) * 4;
-		
-			if (dbg) console.log('%c   ', 'background:rgba(' + imageColors.data[pixel] + ',' +  imageColors.data[pixel + 1] + ',' + imageColors.data[pixel + 2] + ',' + imageColors.data[pixel+3] + '); border:1px solid #ccc');
-			
-			return (firstPixel == pixel || (imageColors.data[pixel] == imageColors.data[firstPixel] && imageColors.data[pixel + 1] == imageColors.data[firstPixel + 1] && imageColors.data[pixel + 2] == imageColors.data[firstPixel + 2] && imageColors.data[pixel + 3] == imageColors.data[firstPixel + 3]));
-		};
-
-		//			Top,     Right,  Bottom, Left
-		var dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]], dbgDirs = ['^', '>', 'v','<'];
-	
-		var d = 0; //Direction
-		var xx = x, yy = y;
-		var vx = NaN, vy = NaN; //First valid point xy
-		
-		var elapsed = 0, timeAtStart = (new Date()).getTime();
-
-		do {
-			
-			var nd = d - 1;
-			if (nd < 0) nd = (isNaN(vx) ? 0 : dirs.length - 1);
-
-			for (var c = 0; c < dirs.length; c++) {
-		
-				var dxx = xx + dirs[nd][0];
-				var dyy = yy + dirs[nd][1];
-				var canvasEdgeReached = (dxx <= 0 || dxx >= w || dyy <= 0 || dyy >= h);
-
-				if (matchColor(dxx, dyy) && !canvasEdgeReached) {
-					if (dbg) console.log('= Same color at ' + dxx + ',' + dyy + ' (' + dbgDirs[nd] + ')');
-					
-					break;
-					
-				} else {
-					if (dbg) console.log('~ Diff color at ' + dxx + ',' + dyy + ' (' + dbgDirs[nd] + ')');
-				}
-				
-				nd++;
-				if (nd >= dirs.length) nd = 0;
-			}
-			
-			if (nd != d) {
-				//Direction changed
-				if (isNaN(vx)) {
-					//Don't add the first point you found
-					vx = xx;
-					vy = yy;
-				} else {
-					if (dbg) console.log('+ Point at ' + xx + ',' + yy);
-
-					points.push(xx);
-					points.push(yy);
-				}
-				d = nd;
-				
-			} 
-			
-			xx += dirs[d][0];
-			yy += dirs[d][1];
-			if (dbg) console.log(dbgDirs[d] + ' Move to ' + xx + ',' + yy);
-			
-			elapsed = ((new Date()).getTime() - timeAtStart) / 1000; //Security check
-			
-		} while ((xx != vx || yy != vy) && (elapsed < 10));
-
-		return points;
-
-	};	
 	
 	//Gridline
 	var gridline = function(){
@@ -1652,5 +1394,4 @@
 	};
   
 })( jQuery );
-
 
