@@ -243,7 +243,7 @@
 			var $p = $(this).parent('section').parent('div');
 			var s = parseInt($p.attr('id').replace('shape', ''));
 			
-			if (confirm('Are you sure to delete area ' + (s+1) + '?')){	
+			if (confirm('Tem certeza que deseja excluir a área ' + (s+1) + '?')){	
 				removeShape(s);
 				
 				draw();
@@ -556,17 +556,17 @@
 		//$(info + ' aside').append('<div id="shape' + activeShape + '" class="active"> <input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="' + shapeDefaultName(activeShape) + '" data-auto="1"><br><input type="text" class="title txt" placeholder="Digite o nome da área" value=""> <a href="#" class="action-btn trash" title="Delete area"><img src="' + imagesPath + 'remove.svg" width="17" height="17"></a><textarea class="coords"></textarea></div>');
 		$(info + ' aside').append(`
 		<div id="shape${activeShape}" class="active">
-		  <section style="display:flex; align-items:center;"> 
-        <input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="${shapeDefaultName(activeShape)}" data-auto="1">
-        <input type="text" class="title txt" placeholder="Nome da Área" value=""> 
-      </section> <br>
-      <section style="display:flex; align-items:center;">
-        <a href="#" class="action-btn trash" title="Delete area">
-          <img src="wp-content/themes/synoptic/images/remove.svg" width="17" height="17">
-        </a> 
-        <textarea class="coords"></textarea>
-      </section>
-    </div>`);
+		  <section style="display:flex; align-items:center; justify-content: space-evenly;"> 
+			<input type="text" class="binding input-unstyled txt" placeholder="Digite o nome da área" disabled value="${shapeDefaultName(activeShape)}" data-auto="1">
+			<input type="text" class="title txt" placeholder="Nome da Área" value=""> 
+			</section> <br>
+			<section style="display:flex; align-items:center; justify-content: space-evenly;">
+				<a href="#" class="action-btn trash" style:="border:none !important;" title="Deletar Área">
+					<i class="fa-solid fa-trash"></i>
+				</a> 
+				<textarea class="coords"></textarea>
+			</section>
+		</div>`);
 		
 	};
 	

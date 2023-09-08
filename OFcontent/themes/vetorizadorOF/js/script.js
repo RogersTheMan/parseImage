@@ -90,19 +90,19 @@ $(document).ready(function () {
 			$('#polygon').removeClass('active');
 			switch(err) {
 				case 'BrowserNotSupported':
-					alert('Sorry, but your browser does not support drag and drop!');
+					alert('Desculpe, seu navegador não suporta arrastar arquivo!');
 					break;
 				case 'TooManyFiles':
-					alert('Sorry, but you drag just one file!');
+					alert('Arraste apenas um arquivo!');
 					break;
 				case 'FileTooLarge':
-					alert('Sorry, but the file is too larger!');
+					alert('Escolha um arquivo menor!');
 					break;
 				case 'FileTypeNotAllowed':
-					alert('Sorry, but the file type is not allowed!');
+					alert('Desculpe, mas esse tipo não é permitido!');
 					break;
 				case 'FileExtensionNotAllowed':
-					alert('Sorry, but the file type is not allowed!');
+					alert('Desculpe, mas esse tipo não é permitido!');
 					break;
 				default:
 					break;
@@ -121,7 +121,7 @@ $(document).ready(function () {
 		beforeSend: function(file, i, done) {
 
 			if (loadedFile) {
-				if (confirm('Are you sure to replace the current image and areas?')) {
+				if (confirm('Tem certeza que deseja substituir a imagem e as áreas?')) {
 					canvasArea.reset();
 				} else { 
 					$('#polygon').removeClass('active');
@@ -505,77 +505,4 @@ function dataURLToBlob(dataURL) {
         
         return new Blob([uInt8Array], {type: contentType});
     }
-}
-
-function sanitizeGalleryURL(url) {
-	
-	if (url.indexOf('http://localhost/') == 0) return url;
-	
-	var domain = 'synoptic.design'; 
-	var aliasDomain = 'www.sqlbi.com/synopticdesign';
-	if (url && url.indexOf('data:') == -1) {
-		url = url.replace('http:', 'https:');
-		
-		//var currentDomain = url.split('/')[(url.indexOf("://") > -1 ? 2 : 0)];
-		//currentDomain = currentDomain.split(':')[0];
-		url = url.replace(aliasDomain, domain);
-	}
-	return url;
-}
-
-//Other helpers
-function stripTags(str){
-	if (str) return str.replace(/(<([^>]+)>)/ig,"");
-	return '';
-}
-
-function stripSeconds(tim){
-	tim = tim.toLowerCase();
-	tim = tim.replace(':00 am', ':00am');
-	tim = tim.replace(':00 pm', ':00pm');
-	tim = tim.replace(':00:00', ':00');
-	if (tim.indexOf(':') == 1) tim = '0'+tim;
-	
-	return tim;
-}
-
-// For IE8 and earlier version.
-if (!Date.now) {
-  Date.now = function() {
-	return new Date().valueOf();
-  }
-}
-
-//Newsletter function
-function isValidEmailAddress(emailAddress) {
-    var pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i);
-    return pattern.test(emailAddress);
-}
-
-function sqlbiSubscribe(){
-	
-	var email =  $('#df-subscribe').val();
-	if (!isValidEmailAddress(email)){
-		$('.newsletter form').show('fast');
-		$('#df-subscribe').addClass('error').focus();
-		return;	
-	}
-
-	$('.newsletter form').hide();
-	$('#df-subscribe').removeClass('error');
-	$('#df-feedback').html('Subscribing...<br>');
-	
-	$.post('https://www.sqlbi.com/wp-admin/admin-ajax.php', { "action": "newsletter_subscribe_ajax", "email" : email, "list" : [111, 41] }).always(function(data){ 
-		
-		if (data.indexOf("invalid") > -1) { 
-			$('.newsletter form').show('fast');
-			$('#df-subscribe').addClass('error').focus();
-		
-		} else {
-		
-			var msg = "Subscription successful! Please check your inbox, you will receive an email with an activation link.";
-			$('#df-feedback').html(msg);
-		}
-	});
-
 }

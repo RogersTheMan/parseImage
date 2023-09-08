@@ -52,8 +52,7 @@ a, a:hover, a:active, a:visited, a:focus {color:#005fe8; text-decoration:none; o
 	
 	.btn.disabled, a.btn.disabled, a.btn.disabled:hover {background:#0166f3e1; color:#fff; cursor:default; opacity: 0.3;}
 
-.action-btn {background:none; border:2px solid #000; font-size:12px;line-height:18px;  padding:6px 10px; margin:0; color:#000}
-	.action-btn:hover {background:#e0e0e0}
+.action-btn {background:none; font-size:12px;line-height:18px;  padding:6px 10px; margin:0; color:#000; padding-left:15px !important;}
 	.action-btn.selected  {background:#aaa; }
 	.action-btn.autoselected {background:#ccc}
 	.action-btn.disabled {background:none !important; border-color:#ddd !important; color:#ddd !important; cursor: default !important}
@@ -227,7 +226,7 @@ h2 {margin:0 0 10px 0; text-transform:uppercase; font-size:24px}
 				.contextmenu li:hover {background-color: #aaa;}
 			.contextmenu .note {display:inline-block; font-size:12px; color:#999; padding:8px 12px;}
 	
-	#shapeList {display:none; float:right; width:250px; padding:20px 20px 10px 20px; background:#f4f4f4;}
+	#shapeList {display:none; float:right; width:300px; padding:20px 20px 10px 20px; background:#f4f4f4;}
 		
 		#shapeList em {color:#999}
 		#shapeList .btn { margin:5px 0 0 0; display:block; text-align:center}
